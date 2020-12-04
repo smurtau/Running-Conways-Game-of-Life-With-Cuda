@@ -2,7 +2,7 @@
 #include<stdlib.h>
 
 int** update_board(int** board_state, int width, int height){
-    int **new_state;
+    int **new_state[height][width];
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             int count = 0;
