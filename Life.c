@@ -3,15 +3,35 @@
 #include<GL/gl.h>
 #include<GL/glu.h>
 #include<GL/glut.h>
-// int** intialize_board(int** board, int width, int height){
+#include<string.h>
+#include <time.h>
 
-// }
-void update_board(int** board_state, int width, int height){
+int** board_state;
+int height = 50;
+int width = 50;
+
+GLint window_w = 600;
+GLint window_h = 600;
+
+GLfloat left = 0.0;
+GLfloat right = 1.0;
+GLfloat bottom = 0.0;
+GLfloat top = 1.0;
+
+void initialize_board(){
+    for (int i = 0; i < height; i++){
+        for (int j = 0; j < width; j++){
+            board_state[i][j] = rand()%2;
+        }
+    }
+ }
+
+ void update_board(){
     int new_state[height][width];
     for (int i = 0; i < height; i++){
         for (int j = 0; j < width; j++){
             int count = 0;
-            if (i - 1 > 0 && i + 1 < height && j - 1 > 0 && j + 1 < width){
+            if (i - 1 > 0 && i + 1 < height-1 && j - 1 > 0 && j + 1 < width-1){
                 if (board_state[i-1][j-1] == 1) count++;
                 if (board_state[i-1][j] == 1) count++;
                 if (board_state[i-1][j+1] == 1) count++;
@@ -21,48 +41,48 @@ void update_board(int** board_state, int width, int height){
                 if (board_state[i+1][j] == 1) count++;
                 if (board_state[i+1][j+1]  == 1) count++;
             }
-            else if (i - 1 < 0 && j - 1 < 0){
+            else if (i == 0 && j == 0){
                 if (board_state[i][j+1] == 1) count++;
                 if (board_state[i+1][j+1] == 1) count++;
                 if (board_state[i+1][j] == 1) count++;
             }
-            else if (i - 1 < 0 && j + 1 > width){
+            else if (i == 0 && j == width-1){
                 if (board_state[i][j-1] == 1) count++;
                 if (board_state[i+1][-1] == 1) count++;
                 if (board_state[i+1][j+1] == 1) count++;
             }
-            else if (i + 1 > height && j - 1 < 0){
+            else if (i == height-1 && j == 0){
                 if (board_state[i-1][j] == 1) count++;
                 if (board_state[i-1][j+1] == 1) count++;
                 if (board_state[i][j+1] == 1) count++;
             }
-            else if (i + 1 > height && j + 1 > width){
+            else if (i == height-1 && j + 1 == width){
                 if (board_state[i][j-1] == 1) count++;
                 if (board_state[i-1][j-1] == 1) count++;
                 if (board_state[i-1][j] == 1) count++;
             }
-            else if (i - 1 <  0){
+            else if (i == 0){
                 if (board_state[i][j-1] == 1) count++;
                 if (board_state[i][j+1] == 1) count++;
                 if (board_state[i+1][j-1] == 1) count++;
                 if (board_state[i+1][j] == 1) count++;
                 if (board_state[i+1][j+1] == 1) count++;
             }
-            else if (i + 1 > height) {
+            else if (i == height-1) {
                 if (board_state[i][j-1] == 1) count++;
                 if (board_state[i-1][j-1] == 1) count++;
                 if (board_state[i-1][j] == 1) count++;
                 if (board_state[i-1][j+1] == 1) count++;
                 if (board_state[i][j+1] == 1) count++;
             }
-            else if (j - 1 < 0) {
+            else if (j == 0) {
                 if (board_state[i-1][j] == 1) count++;
                 if (board_state[i-1][j+1]== 1) count++;
                 if (board_state[i][j+1] == 1) count++;
                 if (board_state[i+1][j] == 1) count++;
                 if (board_state[i+1][j+1]== 1) count++;
             }
-            else if (j + 1 > width) {
+            else if (j == width-1) {
                 if (board_state[i-1][j] == 1) count++;
                 if (board_state[i-1][j-1] == 1) count++;
                 if (board_state[i][j-1] == 1) count++;
@@ -76,41 +96,21 @@ void update_board(int** board_state, int width, int height){
             else if (board_state[i][j] == 1 && (count == 2 || count == 3)) new_state[i][j] = 1;
         }
     }
-    board_state = new_state;
+    for (int i = 0; i < height; i++) memcpy(board_state[i], new_state[i],sizeof(int)*width);
 }
 
-int board_state [5][5] = {
-                         {1,1,0,1,1},
-                         {1,0,0,1,0},
-                         {1,1,1,0,1},
-                         {1,1,1,1,1},
-                         {0,0,1,1,0}
-                         };
-int height = 5;
-int width = 5;
-
-GLint FPS = 24;
-GLint window_w = 600;
-GLint window_h = 600;
-
-GLfloat left = 0.0;
-GLfloat right = 1.0;
-GLfloat bottom = 0.0;
-GLfloat top = 1.0;
-GLint game_w = 100;
-GLint game_h = 100;
 
 void display(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
 
-    GLfloat xsize = (right - left) / game_w;
+    GLfloat xsize = (right - left) / width;
 
-    GLfloat ysize = (top - bottom) / game_h;
+    GLfloat ysize = (top - bottom) / height;
 
     glBegin(GL_QUADS);
-    for (GLint x = 0; x < game_w; x++){
-        for (GLint y = 0; y < game_h; y++){
+    for (GLint x = 0; x < width; x++){
+        for (GLint y = 0; y < height; y++){
             if (board_state[x][y] == 1) glColor3f(0.0,0.0,0.0);
             else glColor3f(1.0,1.0,1.0);
 
@@ -127,9 +127,9 @@ void display(){
 }
 
 void update(int value) {
-    update_board(board_state,width,height);
+    update_board();
     glutPostRedisplay();
-    glutTimerFunc(1000/FPS,update,0);
+    glutTimerFunc(1000,update,0);
 }
 
 void reshape(int width, int height){
@@ -149,6 +149,11 @@ void reshape(int width, int height){
 }
 
 int main (int argc, char **argv) {
+    board_state = malloc(sizeof(int*)*height);
+    srand(time(NULL));
+    for (int i = 0; i < height; i++) board_state[i] = malloc(sizeof(int)*width);
+    initialize_board();
+
     glutInit(&argc,argv);
     glutInitWindowSize(window_w,window_h);
     glutCreateWindow("Life");
@@ -157,6 +162,7 @@ int main (int argc, char **argv) {
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
 
+    glutTimerFunc(1000,update,0);
     glutMainLoop();
 
     return 0;
