@@ -1,3 +1,7 @@
+//Samuel Murtaugh and Jeremy Stacy
+//6780 Final Project
+
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<GL/gl.h>

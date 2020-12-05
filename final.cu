@@ -1,3 +1,6 @@
+//Samuel Murtaugh and Jeremy Stacy
+//6780 Final Project
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -5,9 +8,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
-
-/*#include "cuda.h"
-#include "cuda_gl_interop.h"*/
 
 #define BOARD_DIM 1000
 #define NUM_BLOCK 5
@@ -86,8 +86,6 @@ __global__ void update_board(int board_dimh, int board_dimw, int *o_board, int *
 	for (int i = gbl_id; i < num_squares; i += stride)
 	{
 		num_alive = 0;
-		//if (i < num_squares)
-		//{
 			//look at the 8 neighboring squares
 			if (i == 0)                                                   // top-left corner
 			{
@@ -172,7 +170,6 @@ __global__ void update_board(int board_dimh, int board_dimw, int *o_board, int *
 				else                                                       // cell stays dead
 					n_board[i] = 0;
 			}
-		//}
 	}
 }
 
